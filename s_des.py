@@ -63,7 +63,6 @@ def function_k(ip_bits, key):
     F = xor(extracted_R, key)
     substituted_bits = substitute_bits(get_L(F), S0) + substitute_bits(get_R(F), S1)
     return xor(L, substituted_bits) + R
-    # return xor(get_L(ip_bits), substitute_bits(get_L(xor(permutate(get_R(ip_bits), extraction_p), key)), S0) + substitute_bits(get_R(xor(permutate(get_R(ip_bits), extraction_p), key)), S1)) + get_R(ip_bits)
 
 
 def encrypt(plainText, key):
@@ -83,6 +82,16 @@ def decrypt(cipherText, key):
     ip_inverse = permutate(f1, init_p_inverse)  # R5
     return ip_inverse
 
+'''
+# for assignment
+enrolment_no = input("Enter your enrollment no:")
+last_four_digits = enrolment_no[len(enrolment_no)-4:]
+enrolment_no_bcd = ''
+for i in last_four_digits: enrolment_no_bcd += '{0:04b}'.format(int(i))
+#print(enrolment_no_bcd)
+plainText = enrolment_no_bcd[len(enrolment_no_bcd)-8:][::-1]
+key = enrolment_no_bcd[:10]
+'''
 
 plainText = '10100101'
 key = '0010010111'
