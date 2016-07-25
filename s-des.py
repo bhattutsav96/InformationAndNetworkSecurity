@@ -36,11 +36,14 @@ def find_key1(key):
 
 
 def find_key2(key):
-    return ''.join(permutate(circular_left_shift(circular_left_shift(permutate(key, p10))), p8))
+    return ''.join(permutate(circular_left_shift(circular_left_shift(circular_left_shift(permutate(key, p10)))), p8))
 
 
 def xor(arg1, arg2):
     return ''.join(str(((x+y) % 2)) for x, y in zip(map(int, arg1), map(int, arg2)))
+
+def switch(bits):
+    return get_R(bits) + get_L(bits)
 
 
 def substitute_bits(four_bits, substitution_box):
@@ -53,13 +56,54 @@ def function_k(ip_bits, key):
     #functionk = (L xor F(R xor key),R)
     L = get_L(ip_bits)
     R = get_R(ip_bits)
+    #print("L:"+L)
+    #print("R:"+R)
     extracted_R = permutate(R, extraction_p)
-    xor(L,xor(extracted_R, key))
+    #print("ext_R"+extracted_R)
+    F = xor(extracted_R, key)
+    #print("KeyF"+F)
+    substituted_bits = substitute_bits(get_L(F), S0) + substitute_bits(get_R(F), S1)
+    #print("subbits"+substituted_bits)
+    temp = xor(L,substituted_bits)
+    #print("t"+temp)
+    return xor(L, substituted_bits) + R
 
+
+def encrypt(plainText, key):
+    ip = permutate(plainText, init_p)
+    #print("IP"+ip)
+    f1 = function_k(ip, find_key1(key))
+    #print(f1)
+    switched = switch(f1)
+    #print(switched)
+    f2 = function_k(switched, find_key2(key))
+    #print(f2)
+    ip_inverse = permutate(f2, init_p_inverse)
+    return ip_inverse
+
+
+def decrypt(cipherText, key):
+    ip = permutate(cipherText, init_p)
+    #print("IP"+ip)
+    f2 = function_k(ip, find_key2(key))
+    #print(f2)
+    switched = switch(f2)
+    #print(switched)
+    f1 = function_k(switched, find_key1(key))
+    #print(f1)
+    ip_inverse = permutate(f1, init_p_inverse)
+    return ip_inverse
+    
 
 
 plainText = '10100101'
 key = '0010010111'
-
-print(find_key2(key))
-print(xor('111','101'))
+print("plainText"+plainText)
+print("key:"+key)
+print("Key 1:"+find_key1(key))
+#print(xor('111','101'))
+print("Key 2:"+find_key2(key))
+cipherText = encrypt(plainText, key)
+print("cipher text:"+cipherText)
+decryptedText = decrypt(cipherText, key)
+print("decrypted text:"+decryptedText)
