@@ -4,6 +4,7 @@ init_p_inverse = (4, 1, 3, 5, 7, 2, 8, 6)
 p10 = (3, 5, 2, 7, 4, 10, 1, 9, 8, 6)
 p8 = (6, 3, 7, 4, 8, 5, 10, 9)
 extraction_p = (4, 1, 2, 3, 2, 3, 4, 1)
+p4 = (2,4,3,1)
 
 # substitution boxes
 S0 = [[1, 0, 3, 2],
@@ -62,7 +63,7 @@ def function_k(ip_bits, key):
     extracted_R = permutate(R, extraction_p)
     F = xor(extracted_R, key)
     substituted_bits = substitute_bits(get_L(F), S0) + substitute_bits(get_R(F), S1)
-    return xor(L, substituted_bits) + R
+    return xor(L, permutate(substituted_bits,p4)) + R
 
 
 def encrypt(plainText, key):
